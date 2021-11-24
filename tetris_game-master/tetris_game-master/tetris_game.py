@@ -5,6 +5,7 @@ import sys, random
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QHBoxLayout, QLabel ,QMessageBox
 from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
+from PyQt5 import QtWidgets, QtCore
 
 from tetris_model import BOARD_DATA, Shape
 from tetris_ai import TETRIS_AI
@@ -171,6 +172,47 @@ class Tetris(QMainWindow):
 
         self.updateWindow()
 
+class Level(Tetris):
+    def setLevelButton(self, Form): #난이도 선택 버튼 생성
+        self.pause() #게임 멈추고 레벨 선택
+        Form.setObjectName("Form")
+        Form.setGeometry(973, 331, 300, 150)
+
+        self.pushButton = QtWidgets.QPushButton(Form)
+        self.pushButton.setGeometry(QtCore.QRect(30, 60, 113, 32))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.easyClicked)
+
+        self.pushButton_2 = QtWidgets.QPushButton(Form)
+        self.pushButton_2.setGeometry(QtCore.QRect(160, 60, 113, 32))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.hardClicked)
+
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(120, 30, 281, 23))
+        self.label.setObjectName("label")
+
+        self.LevelButton(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def LevelButton(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Select Level Window"))
+        self.pushButton.setText(_translate("Form", "easy"))
+        self.pushButton_2.setText(_translate("Form", "hard"))
+        self.label.setText(_translate("Form", "난이도 선택"))
+
+    def easyClicked(self, Form):
+        speed = 300
+        self.speed = speed
+        LevelWindow.close()
+        self.start() #수정 필요
+    
+    def hardClicked(self, Form):
+        speed = 50
+        self.speed = speed
+        LevelWindow.close()
+        self.start()
 
 
 
@@ -263,5 +305,9 @@ class Board(QFrame):
 if __name__ == '__main__':
     # random.seed(32)
     app = QApplication([])
-    tetris = Tetris()
+    LevelWindow = QtWidgets.QMainWindow()
+    #tetris = Tetris()
+    lv = Level()
+    lv.setLevelButton(LevelWindow)
+    LevelWindow.show()
     sys.exit(app.exec_())
