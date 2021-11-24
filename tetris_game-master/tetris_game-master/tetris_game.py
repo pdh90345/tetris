@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys, random
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QHBoxLayout, QLabel ,QMessageBox
 from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
 
@@ -17,13 +17,13 @@ class Tetris(QMainWindow):
         self.isStarted = False
         self.isPaused = False
         self.nextMove = None
-        self.lastShape = Shape.shapeNone 
+        self.lastShape = Shape.shapeNone
 
         self.initUI()
 
     def initUI(self):
         self.gridSize = 22
-        self.speed = 100
+        self.speed = 300
 
         self.timer = QBasicTimer()
         self.setFocusPolicy(Qt.StrongFocus)
@@ -37,6 +37,8 @@ class Tetris(QMainWindow):
 
         self.statusbar = self.statusBar()
         self.tboard.msg2Statusbar[str].connect(self.statusbar.showMessage)
+        self.tboard.show_alert_page_1.connect(self.show_alert_gameover)
+
 
         self.start()
 
@@ -46,6 +48,7 @@ class Tetris(QMainWindow):
 
         self.setFixedSize(self.tboard.width() + self.sidePanel.width(),
                           self.sidePanel.height() + self.statusbar.height())
+
 
     def center(self):
         screen = QDesktopWidget().screenGeometry()
@@ -77,12 +80,42 @@ class Tetris(QMainWindow):
         else:
             self.timer.start(self.speed, self)
 
+
         self.updateWindow()
 
     def updateWindow(self):
+
         self.tboard.updateData()
         self.sidePanel.updateData()
         self.update()
+
+    def show_alert_gameover(self): #게임 오버되면 안내 메시지 출력후 게임 종료
+        #alert1 = QMessageBox()
+        #alert1.setIcon(QMessageBox.Warning)
+
+        alert = QMessageBox.warning(
+            self, 'Game Over', 'Game over',
+            QMessageBox.Yes 
+        )
+
+        alert.setText("")
+        alert.setWindowTitle("Game Over")
+        alert.setInformativeText('Game Over')
+        alert.exec_()
+
+    def closeEvent(self, QCloseEvent): # 종료키를 누르면 안내메시지 출력
+        if self.isPaused == False:
+            self.pause()
+    
+        close_ans = QMessageBox.question(self, "종료 확인", "종료하시겠습니까?", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        
+        if close_ans == QMessageBox.Yes:
+            QCloseEvent.accept()
+        else:
+            QCloseEvent.ignore()
+            self.pause()
+
+
 
     def timerEvent(self, event):
         if event.timerId() == self.timer.timerId():
@@ -137,6 +170,8 @@ class Tetris(QMainWindow):
         self.updateWindow()
 
 
+
+
 def drawSquare(painter, x, y, val, s):
     colorTable = [0x000000, 0xCC6666, 0x66CC66, 0x6666CC,
                   0xCCCC66, 0xCC66CC, 0x66CCCC, 0xDAAA00]
@@ -179,6 +214,7 @@ class SidePanel(QFrame):
 
 
 class Board(QFrame):
+    show_alert_page_1 = pyqtSignal()
     msg2Statusbar = pyqtSignal(str)
     speed = 10
 
@@ -187,6 +223,7 @@ class Board(QFrame):
         self.setFixedSize(gridSize * BOARD_DATA.width, gridSize * BOARD_DATA.height)
         self.gridSize = gridSize
         self.initBoard()
+
 
     def initBoard(self):
         self.score = 0
@@ -213,8 +250,12 @@ class Board(QFrame):
         painter.drawLine(self.width(), 0, self.width(), self.height())
 
     def updateData(self):
+        for x in range(0, BOARD_DATA.width - 1):
+            if (BOARD_DATA.backBoard[x] > 0):
+                self.show_alert_page_1.emit()
         self.msg2Statusbar.emit(str(self.score))
         self.update()
+
 
 
 if __name__ == '__main__':

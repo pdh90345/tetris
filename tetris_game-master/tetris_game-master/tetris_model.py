@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import random # 랜덤 모듈을 이용해 도형이 무작위로 나오도록 한다
+from PyQt5.QtWidgets import QMessageBox
 
 class Shape(object): # 도형의 모양
     shapeNone = 0
@@ -105,6 +106,7 @@ class BoardData(object):
             self.currentY = -1
             self.currentDirection = 0
             result = False
+
         self.shapeStat[self.currentShape.shape] += 1
         return result
 
