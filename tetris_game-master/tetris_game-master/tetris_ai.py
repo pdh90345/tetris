@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from tetris_model import BOARD_DATA, Shape
+from tetris_model import BOARD_DATA1, Shape
 import math
 from datetime import datetime
 import numpy as np
@@ -11,51 +11,51 @@ class TetrisAI(object):
 
     def nextMove(self): #블럭의 움직임을 분석, 반복학습하는 함수
         t1 = datetime.now() #현재 시간
-        if BOARD_DATA.currentShape == Shape.shapeNone: #현재 블럭이 없으면
+        if BOARD_DATA1.currentShape == Shape.shapeNone: #현재 블럭이 없으면
             return None #값이 "없음"
 
-        currentDirection = BOARD_DATA.currentDirection #블럭의 현재 위치
-        currentY = BOARD_DATA.currentY #블럭의 현재 y위치
-        _, _, minY, _ = BOARD_DATA.nextShape.getBoundingOffsets(0) #블럭의 모양 기본으로 지정
+        currentDirection = BOARD_DATA1.currentDirection #블럭의 현재 위치
+        currentY = BOARD_DATA1.currentY #블럭의 현재 y위치
+        _, _, minY, _ = BOARD_DATA1.nextShape.getBoundingOffsets(0) #블럭의 모양 기본으로 지정
 
         # print("=======")
         strategy = None #값이 존재하지 않는 변수 생성
-        if BOARD_DATA.currentShape.shape in (Shape.shapeI, Shape.shapeZ, Shape.shapeS): #현재 블럭의 모양이 I, Z, S 이면
+        if BOARD_DATA1.currentShape.shape in (Shape.shapeI, Shape.shapeZ, Shape.shapeS): #현재 블럭의 모양이 I, Z, S 이면
             d0Range = (0, 1) #d0Range(:tuple)에 0과 1을 저장
-        elif BOARD_DATA.currentShape.shape == Shape.shapeO: #현재 블럭의 모양이 O 이면
+        elif BOARD_DATA1.currentShape.shape == Shape.shapeO: #현재 블럭의 모양이 O 이면
             d0Range = (0,) #d0Range에 0을 저장
         else: #현재 블럭의 모양이 J, L, T 이면
             d0Range = (0, 1, 2, 3) #d0Range에 0, 1, 2, 3을 저장
 
-        if BOARD_DATA.nextShape.shape in (Shape.shapeI, Shape.shapeZ, Shape.shapeS): #현재 블럭의 모양이 I, Z, S 이면
+        if BOARD_DATA1.nextShape.shape in (Shape.shapeI, Shape.shapeZ, Shape.shapeS): #현재 블럭의 모양이 I, Z, S 이면
             d1Range = (0, 1) #d1Range(:tuple)에 0과 1을 저장
-        elif BOARD_DATA.nextShape.shape == Shape.shapeO: #현재 블럭의 모양이 O 이면
+        elif BOARD_DATA1.nextShape.shape == Shape.shapeO: #현재 블럭의 모양이 O 이면
             d1Range = (0,) #d1Range에 0을 저장
         else: #현재 블럭의 모양이 J, L, T 이면
             d1Range = (0, 1, 2, 3) #d1Range에 0, 1, 2, 3을 저장
 
         for d0 in d0Range: #doRange 값을 하나씩 빼서 반복문 실행
-            minX, maxX, _, _ = BOARD_DATA.currentShape.getBoundingOffsets(d0) #블럭의 기본 모양을 불러옴
-            for x0 in range(-minX, BOARD_DATA.width - maxX): #빈공간 값을 범위로 반복문 실행
+            minX, maxX, _, _ = BOARD_DATA1.currentShape.getBoundingOffsets(d0) #블럭의 기본 모양을 불러옴
+            for x0 in range(-minX, BOARD_DATA1.width - maxX): #빈공간 값을 범위로 반복문 실행
                 board = self.calcStep1Board(d0, x0) #calcStep1Board 함수 호출
                 for d1 in d1Range: #d1Range 값을 하나씩 빼서 반복문 돌림
-                    minX, maxX, _, _ = BOARD_DATA.nextShape.getBoundingOffsets(d1)
-                    dropDist = self.calcNextDropDist(board, d1, range(-minX, BOARD_DATA.width - maxX)) #calcNextDropDist 함수 호출
-                    for x1 in range(-minX, BOARD_DATA.width - maxX): #빈공간 값을 범위로 반복문 실행
+                    minX, maxX, _, _ = BOARD_DATA1.nextShape.getBoundingOffsets(d1)
+                    dropDist = self.calcNextDropDist(board, d1, range(-minX, BOARD_DATA1.width - maxX)) #calcNextDropDist 함수 호출
+                    for x1 in range(-minX, BOARD_DATA1.width - maxX): #빈공간 값을 범위로 반복문 실행
                         score = self.calculateScore(np.copy(board), d1, x1, dropDist) #calculateScore 함수 호출
                         if not strategy or strategy[2] < score:
                             strategy = (d0, x0, score)
-        print("===", datetime.now() - t1) #게임하는데 걸린 시간 출력
+        # print("===", datetime.now() - t1) #게임하는데 걸린 시간 출력
         return strategy #strategy(:tuple) 반환
 
     def calcNextDropDist(self, data, d0, xRange): #다음에 떨어질 거리를 측정하는 함수
         res = {} #res 딕셔너리 생성
         for x0 in xRange: #너비(width)값을 범위로 반복문 실행
             if x0 not in res: #x0가 딕셔너리에 있으면
-                res[x0] = BOARD_DATA.height - 1 #res의 키:xo에 값:현재 높이 -1을 저장
-            for x, y in BOARD_DATA.nextShape.getCoords(d0, x0, 0): #_model에 정의
+                res[x0] = BOARD_DATA1.height - 1 #res의 키:xo에 값:현재 높이 -1을 저장
+            for x, y in BOARD_DATA1.nextShape.getCoords(d0, x0, 0): #_model에 정의
                 yy = 0
-                while yy + y < BOARD_DATA.height and (yy + y < 0 or data[(y + yy), x] == Shape.shapeNone):
+                while yy + y < BOARD_DATA1.height and (yy + y < 0 or data[(y + yy), x] == Shape.shapeNone):
                     yy += 1
                 yy -= 1
                 if yy < res[x0]:
@@ -63,21 +63,21 @@ class TetrisAI(object):
         return res #res(:dict) 반환
 
     def calcStep1Board(self, d0, x0): #보드 정보를 계산하는 함수
-        board = np.array(BOARD_DATA.getData()).reshape((BOARD_DATA.height, BOARD_DATA.width)) #(reshape: 높이값 행, 너비값 열)의 크기로 다차원배열 생성 후 저장
-        self.dropDown(board, BOARD_DATA.currentShape, d0, x0) #dropDown 함수 호출
+        board = np.array(BOARD_DATA1.getData()).reshape((BOARD_DATA1.height, BOARD_DATA1.width)) #(reshape: 높이값 행, 너비값 열)의 크기로 다차원배열 생성 후 저장
+        self.dropDown(board, BOARD_DATA1.currentShape, d0, x0) #dropDown 함수 호출
         return board #board(:ndarray) 반환
 
     def dropDown(self, data, shape, direction, x0): #블럭을 떨어뜨리는 함수
-        dy = BOARD_DATA.height - 1 #블럭이 그려질 y위치에 현재 높이-1을 저장
+        dy = BOARD_DATA1.height - 1 #블럭이 그려질 y위치에 현재 높이-1을 저장
         for x, y in shape.getCoords(direction, x0, 0): #_model에 정의
             yy = 0
-            while yy + y < BOARD_DATA.height and (yy + y < 0 or data[(y + yy), x] == Shape.shapeNone):
+            while yy + y < BOARD_DATA1.height and (yy + y < 0 or data[(y + yy), x] == Shape.shapeNone):
                 yy += 1 #떨어지면 +1
             yy -= 1 
             if yy < dy:
                 dy = yy
         # print("dropDown: shape {0}, direction {1}, x0 {2}, dy {3}".format(shape.shape, direction, x0, dy))
-        self.dropDownByDist(data, shape, direction, x0, dy) #dropDownByDist 함수 호출, BOARD_DATA, 블럭 모양, 블럭이 그려질 위치, x0, dy 
+        self.dropDownByDist(data, shape, direction, x0, dy) #dropDownByDist 함수 호출, BOARD_DATA1, 블럭 모양, 블럭이 그려질 위치, x0, dy 
 
     def dropDownByDist(self, data, shape, direction, x0, dist): #블럭이 떨어지는 것을 계산하는 함수
         for x, y in shape.getCoords(direction, x0, 0): #_model에 정의
@@ -86,10 +86,10 @@ class TetrisAI(object):
     def calculateScore(self, step1Board, d1, x1, dropDist): #점수를 계산하여 반환하는 함수
         # print("calculateScore")
         t1 = datetime.now() #현재 시간
-        width = BOARD_DATA.width #tetris_model에서 불러온 너비 값을 저장
-        height = BOARD_DATA.height #tetris_model에서 불러온 높이 값을 저장
+        width = BOARD_DATA1.width #tetris_model에서 불러온 너비 값을 저장
+        height = BOARD_DATA1.height #tetris_model에서 불러온 높이 값을 저장
 
-        self.dropDownByDist(step1Board, BOARD_DATA.nextShape, d1, x1, dropDist[x1])
+        self.dropDownByDist(step1Board, BOARD_DATA1.nextShape, d1, x1, dropDist[x1])
         # print(datetime.now() - t1)
 
         # Term 1: lines to be removed
@@ -102,10 +102,10 @@ class TetrisAI(object):
             hasHole = False #구멍 유무를 구분하는 변수 값을 False로 저장, 구멍이 없음
             hasBlock = False #블럭 유무를 구분하는 변수 값을 False로 저장, 블럭이 없음
             for x in range(width): #너비을 반복문 돌림
-                if step1Board[y, x] == Shape.shapeNone: #BOARD_DATA에서 블럭이 없으면
+                if step1Board[y, x] == Shape.shapeNone: #BOARD_DATA1에서 블럭이 없으면
                     hasHole = True #구멍이 있음
                     holeCandidates[x] += 1 #구멍 후보의 갯수 +1
-                else: #BOARD_DATA에서 블럭이 있으면
+                else: #BOARD_DATA1에서 블럭이 있으면
                     hasBlock = True #블럭이 있음
                     roofY[x] = height - y #전체 높이-y 값을 저장
                     if holeCandidates[x] > 0: #구멍 후보의 갯수가 양수라면
