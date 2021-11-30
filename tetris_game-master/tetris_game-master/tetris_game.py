@@ -1,11 +1,13 @@
 import sys, random
 from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QHBoxLayout, QLabel, QMessageBox, QWidget
-from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
+from PyQt5.QtCore import QTime, QTimer, Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5 import QtWidgets, QtCore
 
 from tetris_model import BOARD_DATA1, BOARD_DATA2, Shape 
 from tetris_ai import TETRIS_AI
+
+
 
 # TETRIS_AI = None
 
@@ -46,7 +48,7 @@ class Tetris(QMainWindow):
 
         self.statusbar1 = self.statusBar()       #상태바1 만들기
         self.tboard1.msg2Statusbar[str].connect(self.statusbar1.showMessage)  #사용자 정의 시그널을 상태바 메시지랑 연결
-        self.tboard1.show_alert_page_1.connect(self.show_alert_you_win)     # AI 보드가 패배시 you win 출력
+ 
 
         self.statusbar2 = self.statusBar()       #상태바2 만들기
         self.tboard2.msg2Statusbar[str].connect(self.statusbar2.showMessage)  #사용자 정의 시그널을 상태바 메시지랑 연결
@@ -78,6 +80,7 @@ class Tetris(QMainWindow):
         BOARD_DATA1.createNewPiece()
         BOARD_DATA2.createNewPiece()
         self.timer.start(self.speed, self)
+
 
     def center(self):
         screen = QDesktopWidget().screenGeometry()  #화면 해상도
@@ -113,24 +116,8 @@ class Tetris(QMainWindow):
             QMessageBox.Yes 
         )
 
-        alert.setText("")
-        alert.setWindowTitle("Game Over")
-        alert.setInformativeText('Game Over')
         alert.exec_()
 
-    def show_alert_you_win(self): #게임 오버되면 안내 메시지 출력후 게임 종료
-        alert1 = QMessageBox()
-        alert1.setIcon(QMessageBox.Warning)
-
-        alert = QMessageBox.warning(
-            self, 'You Win!', 'You Win!',
-            QMessageBox.Yes 
-        )
-
-        alert.setText("")
-        alert.setWindowTitle("You Win!")
-        alert.setInformativeText('You Win!')
-        alert.exec_()
 
     def closeEvent(self, QCloseEvent): # 종료키를 누르면 안내메시지 출력
         if self.isPaused == False:
@@ -157,19 +144,35 @@ class Tetris(QMainWindow):
                     k += 1
                 k = 0
                 while BOARD_DATA1.currentX != self.nextMove[1] and k < 5:
-                    if BOARD_DATA1.currentX > self.nextMove[1]:
+                    if BOARD_DATA1.currentX > self.nextMove[1]: 
                         BOARD_DATA1.moveLeft()
                     elif BOARD_DATA1.currentX < self.nextMove[1]:
                         BOARD_DATA1.moveRight()
                     k += 1
             # lines = BOARD_DATA1.dropDown()
-            lines = BOARD_DATA1.moveDown()
-            lines = BOARD_DATA2.moveDown()
-            self.tboard1.score += lines
-            self.tboard2.score += lines
+            lines1 = BOARD_DATA1.moveDown()
+            lines2 = BOARD_DATA2.moveDown()
+            self.tboard1.score += lines1
+            self.tboard2.score += lines2
             if self.lastShape != BOARD_DATA1.currentShape:
                 self.nextMove = None
                 self.lastShape = BOARD_DATA1.currentShape
+            self.sidePanel1.label.setText(str(self.tboard1.score))#점수
+            self.sidePanel2.label.setText(str(self.tboard2.score))
+            # 승리 조건
+            if self.tboard2.score >= 10:
+                alert = QMessageBox.information(
+                self, 'You Win!!!', 'Congratulations 👍👍',
+                QMessageBox.Yes)
+                alert.exec_()
+
+            if self.tboard1.score >= 10:
+                alert = QMessageBox.information(
+                self, 'You Lose...', 'TephaGo is Winner 😢😢',
+                QMessageBox.Yes)
+                alert.exec_()
+
+            
             self.updateWindow()
         else:
             super(Tetris, self).timerEvent(event)
@@ -234,17 +237,23 @@ class SidePanel1(QFrame):
         self.gridSize = gridSize
         self.BOARD_DATA = BOARD_DATA
 
+        self.label = QLabel("score", self)
+        self.label.move(gridSize * 2, gridSize * 5)
+
     def updateData(self):
         self.update()
+
+ 
 
     # 다음에 나올 도형의 모양을 그려준다
     def paintEvent(self, event):        #QPainter 함수
         painter = QPainter(self)
         minX, maxX, minY, maxY = self.BOARD_DATA.nextShape.getBoundingOffsets(0)
 
-        dy = 19 * self.gridSize # 도형의 상하 위치
+        dy = 18 * self.gridSize # 도형의 상하 위치
         dx = (self.width() - (maxX - minX) * self.gridSize) / 2 + 10    # 도형의 좌우 위치
 
+        
         val = self.BOARD_DATA.nextShape.shape
         for x, y in self.BOARD_DATA.nextShape.getCoords(0, 0, -minY):
             drawSquare(painter, x * self.gridSize + dx, y * self.gridSize + dy, val, self.gridSize)
@@ -262,6 +271,10 @@ class SidePanel2(QFrame):
         self.move(gridSize * 10, 0)   #사이드 패널의 도형 위치
         self.gridSize = gridSize
         self.BOARD_DATA = BOARD_DATA
+        
+        self.label = QLabel("score", self)
+        self.label.move(gridSize * 2, gridSize * 5)
+
 
     def updateData(self):
         self.update()
@@ -271,9 +284,9 @@ class SidePanel2(QFrame):
         painter = QPainter(self)
         minX, maxX, minY, maxY = self.BOARD_DATA.nextShape.getBoundingOffsets(0)
 
-        dy = 19 * self.gridSize # 도형의 상하 위치
+        dy = 18 * self.gridSize # 도형의 상하 위치
         dx = (self.width() - (maxX - minX) * self.gridSize) / 2 + 10    # 도형의 좌우 위치
-
+       
         val = self.BOARD_DATA.nextShape.shape
         for x, y in self.BOARD_DATA.nextShape.getCoords(0, 0, -minY):
             drawSquare(painter, x * self.gridSize + dx, y * self.gridSize + dy, val, self.gridSize)
@@ -290,6 +303,7 @@ class Board(QFrame):
         self.gridSize = gridSize
         self.BOARD_DATA = BOARD_DATA
         self.initBoard()
+
 
     def initBoard(self):
         self.score = 0
@@ -316,11 +330,18 @@ class Board(QFrame):
         painter.drawLine(self.width(), 0, self.width(), self.height())
 
     def updateData(self):
+        
+        if not self.BOARD_DATA.flag:
+            self.show_alert_page_1.emit()
+            
         for x in range(0, 10 - 1):
             if (self.BOARD_DATA.backBoard[x] > 0):
                 self.show_alert_page_1.emit()
-        self.msg2Statusbar.emit(str(self.score))
+                
+        self.msg2Statusbar.emit("OpenSW 5")
         self.update()
+
+   
 
 class Level(Tetris):
     def setLevelButton(self, Form): #난이도 선택 버튼 생성

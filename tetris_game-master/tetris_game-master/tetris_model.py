@@ -69,6 +69,7 @@ class Shape(object): # 도형의 모양
 class BoardData(object): 
     width = 10
     height = 22
+    flag = True
 
     def __init__(self): #게임 보드 초기화(생성자 역할)
         self.backBoard = [0] * BoardData.width * BoardData.height
@@ -106,6 +107,7 @@ class BoardData(object):
             self.currentY = -1
             self.currentDirection = 0
             result = False
+            BoardData.flag = False
 
         self.shapeStat[self.currentShape.shape] += 1
         return result
