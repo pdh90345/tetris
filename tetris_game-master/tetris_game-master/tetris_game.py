@@ -394,7 +394,6 @@ class startUI(QWidget):
         self.gridSize = gridSize
         self.center()
         self.setMouseTracking(True)
-<<<<<<< HEAD
 
         #제목
         oname = QLabel('ㅗ', self)
@@ -411,18 +410,10 @@ class startUI(QWidget):
         game_name.setFont(QtGui.QFont("맑은 고딕"))
         game_name.setStyleSheet("Color : white; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.857143, y2:0.857955, stop:0 rgba(10, 242, 251, 255), stop:1 rgba(224, 6, 159, 255)); border-radius: 25px")
         game_name.move(300, 200)
-=======
-        #제목
-        game_name = QLabel('TETRIS GAME', self)
-        game_name.setFont(QtGui.QFont())
-        game_name.setStyleSheet("Color : white")
-        game_name.move(300, 90)
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         game_name.setAlignment(Qt.AlignCenter)
         
         font_MainName =  game_name.font()
         font_MainName.setPointSize(30)
-<<<<<<< HEAD
         font_MainName.setBold(True)
 
         name = QLabel(' 조 : 박다흰 김윤지 이상학 조상혁', self)
@@ -430,38 +421,21 @@ class startUI(QWidget):
         name.setStyleSheet("Color : white")
         name.move(520, 600)
         name.setAlignment(Qt.AlignCenter)
-=======
-
-        name = QLabel('ㅗ조 : 박다흰 김윤지 이상학 조상혁', self)
-        name.setFont(QtGui.QFont('돋움'))
-        name.setStyleSheet("Color : white")
-        name.move(550, 600)
-        name.setAlignment(Qt.AlignCenter)
-
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         info = name.font()
         info.setBold(True)
         info.setPointSize(15)
 
-<<<<<<< HEAD
 
         
 
         game_name.setFont(font_MainName)
         name.setFont(info)
         
-=======
-        game_name.setFont(font_MainName)
-        name.setFont(info)
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
 
         layout = QVBoxLayout()
         layout.addWidget(game_name)
         layout.addWidget(name)
-<<<<<<< HEAD
         layout.addWidget(oname)
-=======
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
 
         #배경 지정
         pal = QPalette()
@@ -498,7 +472,6 @@ class InfoUI(QWidget):
 
     def initUI(self, gridSize):
         self.gridSize = gridSize
-<<<<<<< HEAD
         game_name = QLabel(' 게임설명 ', self)
         game_name.setFont(QtGui.QFont('맑은 고딕'))
         game_name.setStyleSheet("Color : white; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.857143, y2:0.857955, stop:0 rgba(10, 242, 251, 255), stop:1 rgba(224, 6, 159, 255)); border-radius: 25px")
@@ -510,18 +483,6 @@ class InfoUI(QWidget):
         #게임 설명
         level_info = QLabel('1. 게임 난이도를 선택해주세요.',self)
         level_info.setFont(QtGui.QFont('맑은 고딕'))
-=======
-        game_name = QLabel('게임설명', self)
-        game_name.setFont(QtGui.QFont('돋움'))
-        game_name.setStyleSheet("Color : white")
-        game_name.move(350, 30)
-        game_name.setAlignment(Qt.AlignCenter)
-        font_MainName = game_name.font()
-        font_MainName.setPointSize(30)
-        #게임 설명
-        level_info = QLabel('1. 게임 난이도를 선택해주세요.',self)
-        level_info.setFont(QtGui.QFont('돋움'))
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         level_info.setStyleSheet("Color : white")
         level_info.move(20, 90)
         level_info.setAlignment(Qt.AlignCenter)
@@ -563,17 +524,10 @@ class InfoUI(QWidget):
 
         game_name.setFont(font_MainName)
         level_info.setFont(font_level)
-<<<<<<< HEAD
         first_info.setFont(font_level)
         second_info.setFont(font_level)
         third_info.setFont(font_level)
         four_info.setFont(font_level)
-=======
-        first_info.setFont(font_first_info)
-        second_info.setFont(font_sec_info)
-        third_info.setFont(font_th_info)
-        four_info.setFont(font_fo_info)
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
   
         layout = QVBoxLayout()
         layout.addWidget(game_name)
@@ -586,23 +540,14 @@ class InfoUI(QWidget):
         self.setPalette(pal)
 
          #버튼 만들기
-<<<<<<< HEAD
         btn1 = QPushButton('Game Start', self)
-=======
-        btn1 = QPushButton('게임시작', self)
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         btn1.setCheckable(True)
         btn1.clicked.connect(self.isClicked)
         btn1.toggle()
 
         layout.addWidget(btn1)
-<<<<<<< HEAD
         btn1.setFont(QtGui.QFont("맑은 고딕"))
         btn1.setStyleSheet('color:white; background : Blue; border-radius: 10px')
-=======
-        btn1.setFont(QtGui.QFont("돋움"))
-        btn1.setStyleSheet('color:black; background : Blue')
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         btn1.resize(200,50)
         btn1.move(700,600)
 
@@ -626,10 +571,6 @@ class lastUI(QWidget):
         self.score = score
         self.gridSize = gridSize
         self.initUI(self.gridSize, self.score)
-<<<<<<< HEAD
-=======
-
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
     def initUI(self, gridSize, score):
         self.score = score
         self.gridSize = gridSize
@@ -643,16 +584,11 @@ class lastUI(QWidget):
         
         font_MainName =  game_name.font()
         font_MainName.setPointSize(30)
-<<<<<<< HEAD
-=======
-
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         name = QLabel('당신의 점수 : ' + self.score, self)
         name.setFont(QtGui.QFont('돋움'))
         name.setStyleSheet("Color : white")
         name.move(500, 50)
         name.setAlignment(Qt.AlignCenter)
-<<<<<<< HEAD
         info = name.font()
         info.setBold(True)
         info.setPointSize(15)
@@ -661,20 +597,6 @@ class lastUI(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(game_name)
         layout.addWidget(name)
-=======
-
-        info = name.font()
-        info.setBold(True)
-        info.setPointSize(15)
-
-        game_name.setFont(font_MainName)
-        name.setFont(info)
-
-        layout = QVBoxLayout()
-        layout.addWidget(game_name)
-        layout.addWidget(name)
-
->>>>>>> ff58e2cd300c3eac342e6c7c0da4133cee386cbc
         #배경 지정
         pal = QPalette()
         pal.setColor(QPalette.Background, Qt.black) #배경색 지정
