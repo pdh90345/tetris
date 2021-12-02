@@ -1,12 +1,12 @@
 import sys, random
-from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication, QHBoxLayout, QLabel, QMessageBox, QWidget
-from PyQt5.QtCore import QTime, QTimer, Qt, QBasicTimer, pyqtSignal
-from PyQt5.QtGui import QPainter, QColor, QPen
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QWIDGETSIZE_MAX, QBoxLayout, QMainWindow, QApplication, QHBoxLayout, QLabel ,QMessageBox, QStackedLayout, QWidget, QVBoxLayout, QPushButton, QDesktopWidget,QFrame
+from PyQt5.QtCore import QSize, Qt, QBasicTimer, pyqtSignal, QCoreApplication, scientific
+from PyQt5.QtGui import QBrush, QImage, QPainter, QColor, QPalette, QPixmap, QFont, QPen
 from PyQt5 import QtWidgets, QtCore
 
-from tetris_model import BOARD_DATA1, BOARD_DATA2, Shape 
+from tetris_model import BOARD_DATA1, BOARD_DATA2,BoardData, Shape 
 from tetris_ai import TETRIS_AI
-
 
 
 # TETRIS_AI = None
@@ -384,14 +384,249 @@ class Level(Tetris):
         self.speed = speed
         LevelWindow.close()
         self.pause()
+class startUI(QWidget):
+    def __init__(self, gridSize):
+        super().__init__()
+        self.gridSize = gridSize
+        self.initUI(self.gridSize)
 
+    def initUI(self, gridSize):
+        self.gridSize = gridSize
+        self.center()
+        self.setMouseTracking(True)
+
+        #제목
+        oname = QLabel('ㅗ', self)
+        oname.setFont(QtGui.QFont('맑은 고딕'))
+        oname.setStyleSheet("Color : white")
+        oname.move(440 , 550)
+        oname.setAlignment(Qt.AlignCenter)
+        o_info = oname.font()
+        o_info.setBold(True)
+        o_info.setPointSize(50)
+        oname.setFont(o_info)
+
+        game_name = QLabel(' TETRIS GAME ', self)
+        game_name.setFont(QtGui.QFont("맑은 고딕"))
+        game_name.setStyleSheet("Color : white; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.857143, y2:0.857955, stop:0 rgba(10, 242, 251, 255), stop:1 rgba(224, 6, 159, 255)); border-radius: 25px")
+        game_name.move(300, 200)
+        game_name.setAlignment(Qt.AlignCenter)
+        
+        font_MainName =  game_name.font()
+        font_MainName.setPointSize(30)
+        font_MainName.setBold(True)
+
+        name = QLabel(' 조 : 박다흰 김윤지 이상학 조상혁', self)
+        name.setFont(QtGui.QFont('맑은 고딕'))
+        name.setStyleSheet("Color : white")
+        name.move(520, 600)
+        name.setAlignment(Qt.AlignCenter)
+        info = name.font()
+        info.setBold(True)
+        info.setPointSize(15)
+
+
+        
+
+        game_name.setFont(font_MainName)
+        name.setFont(info)
+        
+
+        layout = QVBoxLayout()
+        layout.addWidget(game_name)
+        layout.addWidget(name)
+        layout.addWidget(oname)
+
+        #배경 지정
+        pal = QPalette()
+        pal.setColor(QPalette.Background, Qt.black) #배경색 지정
+        #pal.setColor(QPalette.Background, QColor(114,112,114))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)
+
+        #label = QLabel(self)
+        #label.move(10,10)
+        #pixmap = QPixmap('C:/Users/82103/Desktop/조상혁70/tetris-2/tetris_game-master/tetris_game-master/tetris.jpg')
+        #pixmap = QPixmap('tetris.jpg')
+        #pixmap = pixmap.scaled(int(pixmap.width()+300), int(pixmap.height()+300))
+        #label.move(0,0)
+        #label.setPixmap(pixmap)
+
+    #버튼 리스너 생성
+    def mouseButtonPush(self, buttons):
+        if buttons & Qt.LeftButton:
+            widget.setCurrentIndex(widget.currentIndex()+1)
+            infowindow.show()
+    def mousePressEvent(self, e):
+        self.mouseButtonPush(e.buttons())
+    def center(self):
+        screen = QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) // 2, (screen.height() - size.height()) // 2)
+        
+class InfoUI(QWidget):
+    def __init__(self, gridSize):
+        super().__init__()
+        self.gridSize = gridSize
+        self.initUI(self.gridSize)
+
+    def initUI(self, gridSize):
+        self.gridSize = gridSize
+        game_name = QLabel(' 게임설명 ', self)
+        game_name.setFont(QtGui.QFont('맑은 고딕'))
+        game_name.setStyleSheet("Color : white; background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.857143, y2:0.857955, stop:0 rgba(10, 242, 251, 255), stop:1 rgba(224, 6, 159, 255)); border-radius: 25px")
+        game_name.move(350, 20)
+        game_name.setAlignment(Qt.AlignCenter)
+        font_MainName = game_name.font()
+        font_MainName.setPointSize(30)
+        font_MainName.setBold(True)
+        #게임 설명
+        level_info = QLabel('1. 게임 난이도를 선택해주세요.',self)
+        level_info.setFont(QtGui.QFont('맑은 고딕'))
+        level_info.setStyleSheet("Color : white")
+        level_info.move(20, 90)
+        level_info.setAlignment(Qt.AlignCenter)
+        font_level = level_info.font()
+        font_level.setBold(True)
+        font_level.setPointSize(15)
+  
+        first_info = QLabel('2. ↓버튼을 누르면 도형이 회전합니다.', self)
+        first_info.move(20, 190)#80씩 내려감 -> 100씩 내려감
+        first_info.setStyleSheet("Color : white")
+        first_info.setAlignment(Qt.AlignCenter)
+        font_first_info = first_info.font()
+        font_first_info.setBold(True)
+        font_first_info.setPointSize(15)
+
+        second_info = QLabel('3. ←, → 버튼을 이용하여 도형의 내려가는 방향을 바꿀 수 있습니다.', self)
+        second_info.move(20, 290)#80씩 내려감 -> 100씩 내려감
+        second_info.setStyleSheet("Color : white")
+        second_info.setAlignment(Qt.AlignCenter)
+        font_sec_info = second_info.font()
+        font_sec_info.setBold(True)
+        font_sec_info.setPointSize(15)
+
+        third_info = QLabel('4. 게임 오른쪽에 다음에 그려질 도형을 알 수 있습니다.', self)
+        third_info.move(20, 390)#80씩 내려감 -> 100씩 내려감
+        third_info.setStyleSheet("Color : white")
+        third_info.setAlignment(Qt.AlignCenter)
+        font_th_info = third_info.font()
+        font_th_info.setBold(True)
+        font_th_info.setPointSize(15)
+        
+        four_info = QLabel('5. 게임을 시작하려면 오른쪽에 GAME START 버튼을 눌러주세요.', self)
+        four_info.move(20, 490)#80씩 내려감 -> 100씩 내려감
+        four_info.setStyleSheet("Color : white")
+        four_info.setAlignment(Qt.AlignCenter)
+        font_fo_info = third_info.font()
+        font_fo_info.setBold(True)
+        font_fo_info.setPointSize(15)
+
+        game_name.setFont(font_MainName)
+        level_info.setFont(font_level)
+        first_info.setFont(font_level)
+        second_info.setFont(font_level)
+        third_info.setFont(font_level)
+        four_info.setFont(font_level)
+  
+        layout = QVBoxLayout()
+        layout.addWidget(game_name)
+        layout.addWidget(level_info)
+
+        pal = QPalette()
+        #pal.setColor(QPalette.Background, Qt.black) #배경색 지정
+        pal.setColor(QPalette.Background, QColor(114,112,114))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)
+
+         #버튼 만들기
+        btn1 = QPushButton('Game Start', self)
+        btn1.setCheckable(True)
+        btn1.clicked.connect(self.isClicked)
+        btn1.toggle()
+
+        layout.addWidget(btn1)
+        btn1.setFont(QtGui.QFont("맑은 고딕"))
+        btn1.setStyleSheet('color:white; background : Blue; border-radius: 10px')
+        btn1.resize(200,50)
+        btn1.move(700,600)
+
+        #배경 지정 
+        pal = QPalette()
+        pal.setColor(QPalette.Background, Qt.black) #배경색 지정
+        #pal.setColor(QPalette.Background, QColor(114,112,114))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)
+    #버튼 리스너 생성
+    def isClicked(self):
+        print("버튼 클릭됨")
+        widget.setCurrentIndex(widget.currentIndex()+1)
+        #Tetris.show()
+        LevelWindow.show()
+        return True
+'''
+class lastUI(QWidget):
+    def __init__(self, gridSize, score):
+        super().__init__()
+        self.score = score
+        self.gridSize = gridSize
+        self.initUI(self.gridSize, self.score)
+    def initUI(self, gridSize, score):
+        self.score = score
+        self.gridSize = gridSize
+        #제목
+        print("마지막 UI입니다.")
+        game_name = QLabel('게임 정보', self)
+        game_name.setFont(QtGui.QFont())
+        game_name.setStyleSheet("Color : white")
+        game_name.move(300, 90)
+        game_name.setAlignment(Qt.AlignCenter)
+        
+        font_MainName =  game_name.font()
+        font_MainName.setPointSize(30)
+        name = QLabel('당신의 점수 : ' + self.score, self)
+        name.setFont(QtGui.QFont('돋움'))
+        name.setStyleSheet("Color : white")
+        name.move(500, 50)
+        name.setAlignment(Qt.AlignCenter)
+        info = name.font()
+        info.setBold(True)
+        info.setPointSize(15)
+        game_name.setFont(font_MainName)
+        name.setFont(info)
+        layout = QVBoxLayout()
+        layout.addWidget(game_name)
+        layout.addWidget(name)
+        #배경 지정
+        pal = QPalette()
+        pal.setColor(QPalette.Background, Qt.black) #배경색 지정
+        #pal.setColor(QPalette.Background, QColor(114,112,114))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)
+'''
     
 
 if __name__ == '__main__':
     # random.seed(32)
+    #app = QApplication([])
+    #LevelWindow = QtWidgets.QMainWindow()
+    #lv = Level()
+    #lv.setLevelButton(LevelWindow)
+    #LevelWindow.show()
+    #sys.exit(app.exec_())
     app = QApplication([])
     LevelWindow = QtWidgets.QMainWindow()
+    #tetris = Tetris()
+    #화면 전환용 Widget 설정
+    widget = QtWidgets.QStackedWidget()
+    mainWindow = startUI(30)
+    infowindow = InfoUI(30)
+    #lastwidow = lastUI(30)
     lv = Level()
     lv.setLevelButton(LevelWindow)
-    LevelWindow.show()
+    widget.addWidget(mainWindow)
+    widget.addWidget(infowindow)
+    widget.addWidget(lv)
+    widget.show()
+    #LevelWindow.show()
     sys.exit(app.exec_())
