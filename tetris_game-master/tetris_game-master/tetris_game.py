@@ -157,8 +157,14 @@ class Tetris(QMainWindow):
             if self.lastShape != BOARD_DATA1.currentShape:
                 self.nextMove = None
                 self.lastShape = BOARD_DATA1.currentShape
-            self.sidePanel1.label.setText(str(self.tboard1.score))#점수
+
+            #점수    
+            self.sidePanel1.label.setText(str(self.tboard1.score))
+            self.sidePanel1.label.setFont(QtGui.QFont("맑은 고딕",20))
+
             self.sidePanel2.label.setText(str(self.tboard2.score))
+            self.sidePanel2.label.setFont(QtGui.QFont("맑은 고딕",20))
+
             # 승리 조건
             if self.tboard2.score >= 10:
                 alert = QMessageBox.information(
@@ -238,7 +244,11 @@ class SidePanel1(QFrame):
         self.BOARD_DATA = BOARD_DATA
 
         self.label = QLabel("score", self)
-        self.label.move(gridSize * 2, gridSize * 5)
+        self.label.setGeometry(QtCore.QRect(gridSize * 2, gridSize * 5, 50, 30))
+
+        self.name = QLabel("AI🤖", self)
+        self.name.setGeometry(QtCore.QRect(gridSize * 1.5, gridSize * 2, 70, 70))
+        self.name.setFont(QtGui.QFont("맑은 고딕",15))
 
     def updateData(self):
         self.update()
@@ -273,7 +283,12 @@ class SidePanel2(QFrame):
         self.BOARD_DATA = BOARD_DATA
         
         self.label = QLabel("score", self)
-        self.label.move(gridSize * 2, gridSize * 5)
+        self.label.setGeometry(QtCore.QRect(gridSize * 2, gridSize * 5, 50, 30))
+
+        self.name = QLabel("Player", self)
+        self.name.setGeometry(QtCore.QRect(gridSize * 1.5, gridSize * 1.3, 70, 100))
+        self.name.setFont(QtGui.QFont("맑은 고딕",15))
+
 
 
     def updateData(self):
@@ -384,6 +399,7 @@ class Level(Tetris):
         self.speed = speed
         LevelWindow.close()
         self.pause()
+
 class startUI(QWidget):
     def __init__(self, gridSize):
         super().__init__()
