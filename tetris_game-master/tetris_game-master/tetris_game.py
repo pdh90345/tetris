@@ -166,13 +166,13 @@ class Tetris(QMainWindow):
             self.sidePanel2.label.setFont(QtGui.QFont("맑은 고딕",20))
 
             # 승리 조건
-            if self.tboard2.score >= 10:
+            if self.tboard2.score >= self.tboard1.score + 10:   #AI보다 10점 이상을 앞서면 승리
                 alert = QMessageBox.information(
                 self, 'You Win!!!', 'Congratulations 👍👍',
                 QMessageBox.Yes)
                 alert.exec_()
 
-            if self.tboard1.score >= 10:
+            if self.tboard1.score >= self.tboard2.score + 10:   #AI보다 10점 이상을 뒤쳐지면 패배
                 alert = QMessageBox.information(
                 self, 'You Lose...', 'TephaGo is Winner 😢😢',
                 QMessageBox.Yes)
@@ -252,8 +252,6 @@ class SidePanel1(QFrame):
 
     def updateData(self):
         self.update()
-
- 
 
     # 다음에 나올 도형의 모양을 그려준다
     def paintEvent(self, event):        #QPainter 함수
@@ -392,7 +390,7 @@ class Level(Tetris):
         speed = 300
         self.speed = speed
         LevelWindow.close()
-        self.pause() #수정 필요
+        self.pause()
 
     def hardClicked(self, Form):
         speed = 100
@@ -441,13 +439,9 @@ class startUI(QWidget):
         info.setBold(True)
         info.setPointSize(15)
 
-
-        
-
         game_name.setFont(font_MainName)
         name.setFont(info)
         
-
         layout = QVBoxLayout()
         layout.addWidget(game_name)
         layout.addWidget(name)
@@ -456,17 +450,8 @@ class startUI(QWidget):
         #배경 지정
         pal = QPalette()
         pal.setColor(QPalette.Background, Qt.black) #배경색 지정
-        #pal.setColor(QPalette.Background, QColor(114,112,114))
         self.setAutoFillBackground(True)
         self.setPalette(pal)
-
-        #label = QLabel(self)
-        #label.move(10,10)
-        #pixmap = QPixmap('C:/Users/82103/Desktop/조상혁70/tetris-2/tetris_game-master/tetris_game-master/tetris.jpg')
-        #pixmap = QPixmap('tetris.jpg')
-        #pixmap = pixmap.scaled(int(pixmap.width()+300), int(pixmap.height()+300))
-        #label.move(0,0)
-        #label.setPixmap(pixmap)
 
     #버튼 리스너 생성
     def mouseButtonPush(self, buttons):
@@ -497,7 +482,7 @@ class InfoUI(QWidget):
         font_MainName.setPointSize(30)
         font_MainName.setBold(True)
         #게임 설명
-        level_info = QLabel('1. 게임 난이도를 선택해주세요.',self)
+        level_info = QLabel('1. 난이도를 선택할 수 있습니다.',self)
         level_info.setFont(QtGui.QFont('맑은 고딕'))
         level_info.setStyleSheet("Color : white")
         level_info.move(20, 90)
@@ -506,7 +491,7 @@ class InfoUI(QWidget):
         font_level.setBold(True)
         font_level.setPointSize(15)
   
-        first_info = QLabel('2. ↓버튼을 누르면 도형이 회전합니다.', self)
+        first_info = QLabel('2. ↑ 키는 좌, ↓ 키는 우로 도형을 회전시킵니다.', self)
         first_info.move(20, 190)#80씩 내려감 -> 100씩 내려감
         first_info.setStyleSheet("Color : white")
         first_info.setAlignment(Qt.AlignCenter)
@@ -514,7 +499,7 @@ class InfoUI(QWidget):
         font_first_info.setBold(True)
         font_first_info.setPointSize(15)
 
-        second_info = QLabel('3. ←, → 버튼을 이용하여 도형의 내려가는 방향을 바꿀 수 있습니다.', self)
+        second_info = QLabel('3. ←, → 키을 이용하여 도형의 내려가는 방향을 바꿀 수 있습니다.', self)
         second_info.move(20, 290)#80씩 내려감 -> 100씩 내려감
         second_info.setStyleSheet("Color : white")
         second_info.setAlignment(Qt.AlignCenter)
@@ -522,7 +507,7 @@ class InfoUI(QWidget):
         font_sec_info.setBold(True)
         font_sec_info.setPointSize(15)
 
-        third_info = QLabel('4. 게임 오른쪽에 다음에 그려질 도형을 알 수 있습니다.', self)
+        third_info = QLabel('4. D 키과 SPACE 키를 이용해 도형을 빠르게 내릴 수 있습니다.', self)
         third_info.move(20, 390)#80씩 내려감 -> 100씩 내려감
         third_info.setStyleSheet("Color : white")
         third_info.setAlignment(Qt.AlignCenter)
@@ -530,7 +515,7 @@ class InfoUI(QWidget):
         font_th_info.setBold(True)
         font_th_info.setPointSize(15)
         
-        four_info = QLabel('5. 게임을 시작하려면 오른쪽에 GAME START 버튼을 눌러주세요.', self)
+        four_info = QLabel('5. 게임을 시작하려면 Game Start 버튼을 눌러주세요.', self)
         four_info.move(20, 490)#80씩 내려감 -> 100씩 내려감
         four_info.setStyleSheet("Color : white")
         four_info.setAlignment(Qt.AlignCenter)
@@ -580,69 +565,18 @@ class InfoUI(QWidget):
         #Tetris.show()
         LevelWindow.show()
         return True
-'''
-class lastUI(QWidget):
-    def __init__(self, gridSize, score):
-        super().__init__()
-        self.score = score
-        self.gridSize = gridSize
-        self.initUI(self.gridSize, self.score)
-    def initUI(self, gridSize, score):
-        self.score = score
-        self.gridSize = gridSize
-        #제목
-        print("마지막 UI입니다.")
-        game_name = QLabel('게임 정보', self)
-        game_name.setFont(QtGui.QFont())
-        game_name.setStyleSheet("Color : white")
-        game_name.move(300, 90)
-        game_name.setAlignment(Qt.AlignCenter)
-        
-        font_MainName =  game_name.font()
-        font_MainName.setPointSize(30)
-        name = QLabel('당신의 점수 : ' + self.score, self)
-        name.setFont(QtGui.QFont('돋움'))
-        name.setStyleSheet("Color : white")
-        name.move(500, 50)
-        name.setAlignment(Qt.AlignCenter)
-        info = name.font()
-        info.setBold(True)
-        info.setPointSize(15)
-        game_name.setFont(font_MainName)
-        name.setFont(info)
-        layout = QVBoxLayout()
-        layout.addWidget(game_name)
-        layout.addWidget(name)
-        #배경 지정
-        pal = QPalette()
-        pal.setColor(QPalette.Background, Qt.black) #배경색 지정
-        #pal.setColor(QPalette.Background, QColor(114,112,114))
-        self.setAutoFillBackground(True)
-        self.setPalette(pal)
-'''
-    
 
 if __name__ == '__main__':
-    # random.seed(32)
-    #app = QApplication([])
-    #LevelWindow = QtWidgets.QMainWindow()
-    #lv = Level()
-    #lv.setLevelButton(LevelWindow)
-    #LevelWindow.show()
-    #sys.exit(app.exec_())
     app = QApplication([])
     LevelWindow = QtWidgets.QMainWindow()
-    #tetris = Tetris()
     #화면 전환용 Widget 설정
     widget = QtWidgets.QStackedWidget()
     mainWindow = startUI(30)
     infowindow = InfoUI(30)
-    #lastwidow = lastUI(30)
     lv = Level()
     lv.setLevelButton(LevelWindow)
     widget.addWidget(mainWindow)
     widget.addWidget(infowindow)
     widget.addWidget(lv)
     widget.show()
-    #LevelWindow.show()
     sys.exit(app.exec_())
