@@ -515,7 +515,7 @@ class InfoUI(QWidget):
         font_th_info.setBold(True)
         font_th_info.setPointSize(15)
         
-        four_info = QLabel('5. 게임을 시작하려면 Game Start 버튼을 눌러주세요.', self)
+        four_info = QLabel('5. P키를 누르면 게임을 일시정지 할 수 있습니다.', self)
         four_info.move(20, 490)#80씩 내려감 -> 100씩 내려감
         four_info.setStyleSheet("Color : white")
         four_info.setAlignment(Qt.AlignCenter)
@@ -523,12 +523,21 @@ class InfoUI(QWidget):
         font_fo_info.setBold(True)
         font_fo_info.setPointSize(15)
 
+        p_info = QLabel('6. 게임을 시작하려면 Game Start 버튼을 눌러주세요.', self)
+        p_info.move(20, 590)#80씩 내려감 -> 100씩 내려감
+        p_info.setStyleSheet("Color : white")
+        p_info.setAlignment(Qt.AlignCenter)
+        font_p_info = third_info.font()
+        font_p_info.setBold(True)
+        font_p_info.setPointSize(15)
+
         game_name.setFont(font_MainName)
         level_info.setFont(font_level)
         first_info.setFont(font_level)
         second_info.setFont(font_level)
         third_info.setFont(font_level)
         four_info.setFont(font_level)
+        p_info.setFont(font_level)
   
         layout = QVBoxLayout()
         layout.addWidget(game_name)
