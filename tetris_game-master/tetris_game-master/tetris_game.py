@@ -70,7 +70,7 @@ class Tetris(QMainWindow):
             return
 
         self.isStarted = True
-        self.tboard1.score = 5
+        self.tboard1.score = 0
         self.tboard2.score = 0
         BOARD_DATA1.clear()
         BOARD_DATA2.clear()
