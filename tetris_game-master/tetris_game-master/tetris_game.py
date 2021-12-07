@@ -70,7 +70,7 @@ class Tetris(QMainWindow):
             return
 
         self.isStarted = True
-        self.tboard1.score = 0
+        self.tboard1.score = 5
         self.tboard2.score = 0
         BOARD_DATA1.clear()
         BOARD_DATA2.clear()
@@ -117,20 +117,6 @@ class Tetris(QMainWindow):
         )
 
         alert.exec_()
-
-
-    def closeEvent(self, QCloseEvent): # 종료키를 누르면 안내메시지 출력
-        if self.isPaused == False:
-            self.pause()
-    
-        close_ans = QMessageBox.question(self, "종료 확인", "종료하시겠습니까?", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-        
-        if close_ans == QMessageBox.Yes:
-            QCloseEvent.accept()
-        else:
-            QCloseEvent.ignore()
-            self.pause()
-
 
     #시간이 지남에 따라 도형의 다음 위치를 바꿈
     def timerEvent(self, event):    #위젯에 상속되어있는 함수를 수정
@@ -287,8 +273,6 @@ class SidePanel2(QFrame):
         self.name.setGeometry(QtCore.QRect(gridSize * 1.5, gridSize * 1.3, 70, 100))
         self.name.setFont(QtGui.QFont("맑은 고딕",15))
 
-
-
     def updateData(self):
         self.update()
 
@@ -303,7 +287,6 @@ class SidePanel2(QFrame):
         val = self.BOARD_DATA.nextShape.shape
         for x, y in self.BOARD_DATA.nextShape.getCoords(0, 0, -minY):
             drawSquare(painter, x * self.gridSize + dx, y * self.gridSize + dy, val, self.gridSize)
-
 
 class Board(QFrame):
     show_alert_page_1 = pyqtSignal()
@@ -354,8 +337,6 @@ class Board(QFrame):
         self.msg2Statusbar.emit("OpenSW 5")
         self.update()
 
-   
-
 class Level(Tetris):
     def setLevelButton(self, Form): #난이도 선택 버튼 생성
         self.pause() #게임 멈추고 레벨 선택
@@ -397,6 +378,8 @@ class Level(Tetris):
         self.speed = speed
         LevelWindow.close()
         self.pause()
+
+    
 
 class startUI(QWidget):
     def __init__(self, gridSize):
@@ -464,7 +447,7 @@ class startUI(QWidget):
         screen = QDesktopWidget().screenGeometry()
         size = self.geometry()
         self.move((screen.width() - size.width()) // 2, (screen.height() - size.height()) // 2)
-        
+             
 class InfoUI(QWidget):
     def __init__(self, gridSize):
         super().__init__()
@@ -584,8 +567,11 @@ if __name__ == '__main__':
     infowindow = InfoUI(30)
     lv = Level()
     lv.setLevelButton(LevelWindow)
+
     widget.addWidget(mainWindow)
     widget.addWidget(infowindow)
     widget.addWidget(lv)
+
     widget.show()
+
     sys.exit(app.exec_())
